@@ -1,148 +1,247 @@
-#include<stdio.h>
+#include <stdio.h>
 
+// FUNÇÃO DO MENU
 void menu(void){
-printf("================================\n");
-printf("    MENU - RECARGA DE BATERIA\n");
-printf("================================\n");
-printf("1 - Informacoes do carro\n");
-printf("2 - Energia consumida\n");
-printf("3 - Tempo estimado de recarga\n");
-printf("4 - Custo da recarga\n");
-printf("5 - Relatorio de uso\n");
-printf("6 - Fim da Simulacao\n");
-printf("Escolha uma opcao: ");
+    printf("================================\n");
+    printf("      ESTACAO DE RECARGA\n");
+    printf("================================\n");
+    printf("1 - Nova sessao de recarga\n");
+    printf("2 - Listar sessoes\n");
+    printf("3 - Buscar sessao\n");
+    printf("4 - Ordenar sessoes\n");
+    printf("5 - Estatisticas\n");
+    printf("6 - Fim da Simulacao\n");
+    printf("Escolha uma opcao: ");
+}
+
+
+// FUNÇÃO DE FECHAR
+void close(int fechar){
+    printf("Para voltar ao menu digite 0\n");
+    scanf("%d", &fechar);
+        while(fechar != 0){
+            printf("Para voltar ao menu digite 0\n");
+            scanf("%d", &fechar);
+            switch(fechar){
+                case 0:
+                    break;}
+                }
+            }
+            
+// STRUCT
+typedef struct{
+    float ener_consumida;
+    float valor_total;
+    float tempo;
+    int tempo_hora;
+    int tempo_min;
+    float porcentagem_f;
+}Variaveis;
+
+typedef struct{
+        int ID;
+        float total_kwh;
+        float porcentagem;
+        int hora;
+        Variaveis variaveis;
+    }Carro;
+
+
+
+// FUNÇÕES DE TAXA
+float f_fator_tempo(int carro_atual){
+    if(carro_atual > 8){
+        return 2.0;
+    }else if(carro_atual > 5){
+        return 1.5;
+    }else if(carro_atual > 2){
+        return 1.2;
+    }else{
+        return 1.0;
+    }
+}
+
+float f_fator_horario(Carro carro){
+    if(6 < carro.hora && carro.hora <= 10){
+                    return 1.1;
+                }else if(16 < carro.hora && carro.hora <= 21){
+                    return 1.1;
+                }else{
+                    return 1.0;
+                }
+}
+
+
+// FUNÇÃO DE BUSCA LINEAR
+int buscar_linear(Carro carro[], int carro_atual, int ID){
+    for(int i=0; i<carro_atual;i++){
+        if(carro[i].ID == ID){
+            return i;
+        }
+    }
+    return -1;
 }
 
 
 
-
+// CÓDIGO PRINCIPAL
 int main(){
 
-int opcao, fechar;
-float total_kwh, ener_consumida, porcentagem, valor_total, tempo, porcentagem_f;
+    Carro carro[100];
+    
+
+    int opcao=0;
+    int fechar=1;
+    int carro_atual=0;
+    
+    int ID = 0;
 
 
+    while(opcao != 6){
+
+        menu();
+        scanf("%d", &opcao);
+        printf("\n");
+
+        switch(opcao){
+
+            case 1:
+
+                printf("=========================\n");
+                printf("  NOVA SESSAO DE RECARGA\n");
+                printf("=========================\n");
+
+                printf("Quantos kWh cabem no carro:\n");
+                scanf("%f", &carro[carro_atual].total_kwh);
+
+                printf("Porcentagem de energia do carro:\n");
+                scanf("%f", &carro[carro_atual].porcentagem);
+
+                // Validação da porcentagem
+                while(carro[carro_atual].porcentagem < 0 || carro[carro_atual].porcentagem > 100){
+                    printf("PORCENTAGEM INVALIDA!");
+                    printf("A porcentagem esta errada, digite novamente (0 ate 100):\n");
+                    scanf("%f", &carro[carro_atual].porcentagem);
+                }
+
+                printf("Digite o horario da recarga em horas (0 ate 23):\n");
+                scanf("%d", &carro[carro_atual].hora);
+
+                // Validação do horario
+                while(carro[carro_atual].hora < 0 || carro[carro_atual].hora > 23){
+                    printf("HORARIO INVALIDO!");
+                    printf("Digite o horario da recarga em horas (0 ate 23):\n");
+                    scanf("%d", &carro[carro_atual].hora);
+                }
+
+                if(carro_atual > 9){
+                    printf("\n");
+                    printf("ERRO NO SISTEMA!\n");
+                    printf("Quantidade maxima excedida!\n");
+                    printf("O sistema foi desligado instantaneamente.\n");
+                    printf("Dados da sessao perdidos!\n");
+                    return 0;
+                }
+
+                // Energia consumida pelo carro
+                carro[carro_atual].variaveis.ener_consumida = carro[carro_atual].total_kwh - carro[carro_atual].total_kwh * (carro[carro_atual].porcentagem / 100);
+                // Tempo da recarga em horas
+                carro[carro_atual].variaveis.tempo = (carro[carro_atual].variaveis.ener_consumida / 50) * f_fator_tempo(carro_atual);
+                // Tempo da recarga em horas inteiro
+                carro[carro_atual].variaveis.tempo_hora = (int)(carro[carro_atual].variaveis.ener_consumida / 50) * f_fator_tempo(carro_atual);
+                // Minutos da recarga
+                carro[carro_atual].variaveis.tempo_min = (carro[carro_atual].variaveis.tempo - carro[carro_atual].variaveis.tempo_hora) * 60;
+                // Custo total
+                carro[carro_atual].variaveis.valor_total = (carro[carro_atual].variaveis.ener_consumida * 2 + 1.80) * f_fator_horario(carro[carro_atual]);
+                // Porcentagem que será carregada
+                carro[carro_atual].variaveis.porcentagem_f = 100 - carro[carro_atual].porcentagem;
 
 
+                carro[carro_atual].ID = carro_atual + 1;
+                carro_atual++;
+                
+                printf("\n");
+                close(fechar);
 
+                printf("\n");
+                printf("Informacoes salvas com sucesso!\n");
+                printf("\n");
+                break;
 
+            case 2:
 
-while(opcao != 6){
+                printf("=========================\n");
+                printf("     LISTA DE SESSOES\n");
+                printf("=========================\n");
 
-    menu();
-    scanf("%d", &opcao);
-    printf("\n");
-    switch(opcao){
-        case 1:
-        printf("=========================\n");
-        printf("  Informacoes do carro\n");
-        printf("=========================\n");
-        printf("Quantos kWh cabem no carro: \n");
-        scanf("%f", &total_kwh);
-        printf("Porcentagem de energia do carro: \n");
-        scanf("%f", &porcentagem);
-            while(porcentagem < 0 || porcentagem > 100){
-                printf("A porcentagem esta errada, digite novamente (0 ate 100): \n");
-                scanf("%f", &porcentagem);
-            }
-        printf("Para voltar ao menu digite 0\n");
-        scanf("%d", &fechar);
-        while(fechar != 0){
-            printf("Para voltar ao menu digite 0\n");
-            scanf("%d", &fechar);
-            switch(fechar){
-                case 0:
-                    break;}
-            }
-        printf("-----------------------------\n");
-        printf("\n");
-        // calculos
-        ener_consumida = total_kwh - total_kwh*(porcentagem/100); // energia consumida pelo carro para carregar 100%
-        tempo = (ener_consumida * 60) / 50; // tempo em minutos
-        valor_total = ener_consumida * 2 + 1.80; // preço por kwh = R$2 ; taxa de ativação = R$1,80 
-        porcentagem_f = 100 - porcentagem; // quantos % falta para carregar o carro
-            break;
-        case 2:
-        printf("=========================\n");
-        printf("    Energia consumida\n");
-        printf("=========================\n");
-        printf("A energia consumida pelo carro e de: %.2f kWh\n", ener_consumida);
-        printf("\n");
-        printf("Para voltar ao menu digite 0\n");
-        scanf("%d", &fechar);
-        while(fechar != 0){
-            printf("Para voltar ao menu digite 0\n");
-            scanf("%d", &fechar);
-            switch(fechar){
-                case 0:
-                    break;}
-            }
-        printf("-----------------------------\n");
-        printf("\n");
-            break;
-        case 3:
-        printf("=========================\n");
-        printf("Tempo estimado de recarga\n"); // carregador rapido (DC 50 Kw) 100% em 1 hora
-        printf("=========================\n");
-        printf("O tempo de regarda e de %.2f minutos\n", tempo);
-        printf("\n");
-        printf("Para voltar ao menu digite 0\n");
-        scanf("%d", &fechar);
-        while(fechar != 0){
-            printf("Para voltar ao digite 0\n");
-            scanf("%d", &fechar);
-            switch(fechar){
-                case 0:
-                    break;}
-            }
-        printf("-----------------------------\n");
-        printf("\n");
-            break;
-        case 4:
-        printf("=========================\n");
-        printf("    Custo da recarga\n"); // total = (kWh adicionado) X (Preço por kWh) + Taxa de ativação
-        printf("=========================\n");
-        printf("O custo total do abastecimento e de: R$%.2f\n", valor_total);
-        printf("\n");
-        printf("Para voltar ao menu digite 0\n");
-        scanf("%d", &fechar);
-        while(fechar != 0){
-            printf("Para voltar ao menu digite 0\n");
-            scanf("%d", &fechar);
-            switch(fechar){
-                case 0:
-                    break;}
-            }
-        printf("-----------------------------\n");
-        printf("\n");
-            break;
-        case 5:
-        printf("=========================\n");
-        printf("       RELATORIO\n");
-        printf("=========================\n");
-        printf("kWh do carro: %.2f\n", total_kwh);
-        printf("Porcentagem a ser carregada: %.0f%%\n", porcentagem_f);
-        printf("Energia consumida pelo carro: %.2f kWh\n", ener_consumida);
-        printf("Tempo estimado de regarda: %.2f minutos\n", tempo);
-        printf("Custo total do abastecimento: R$%.2f\n", valor_total);
-        printf("\n");
-        printf("Para voltar ao menu digite 0\n");
-        scanf("%d", &fechar);
-        while(fechar != 0){
-            printf("Para voltar ao menu digite 0\n");
-            scanf("%d", &fechar);
-            switch(fechar){
-                case 0:
-                    break;}
-            }
-        printf("-----------------------------\n");
-        printf("\n");
-            break;
-        case 6:
-        printf("---- Fim da Simulacao ----");
-            break;
+                for(int i = 0; i < carro_atual; i++){
+
+                    printf("\n");
+                    printf("CARRO %d\n", i + 1);
+                    printf("-------------------------\n");
+                    printf("Horario da recarga: %d hora\n", carro[i].hora);
+                    printf("kWh do carro: %.2f\n", carro[i].total_kwh);
+                    printf("Porcentagem a carregar: %.0f%%\n", carro[i].variaveis.porcentagem_f);
+                    printf("Energia consumida: %.2f kWh\n", carro[i].variaveis.ener_consumida);
+                    printf("Tempo estimado: %d hora e %d minutos\n", carro[i].variaveis.tempo_hora, carro[i].variaveis.tempo_min);
+                    printf("Custo total: R$%.2f\n", carro[i].variaveis.valor_total);
+                    printf("-------------------------\n");
+                }
+                printf("\n");
+
+                printf("\n");
+                close(fechar);
+
+                break;
+                
+            case 3:
+
+                printf("=========================\n");
+                printf("     BUSCAR SESSAO\n");
+                printf("=========================\n");
+                printf("\n");
+                printf("Digite o ID da sessao: ");
+                scanf("%d", &ID);
+
+                int resultado = buscar_linear(carro, carro_atual, ID);
+
+                if(resultado != -1){
+                    printf("     SESSAO ENCONTRADA\n");
+                    printf("----------------------------\n");
+                    printf("\n");
+                    printf("CARRO %d\n", resultado + 1);
+                    printf("-------------------------\n");
+                    printf("Horario da recarga: %d hora\n", carro[resultado].hora);
+                    printf("kWh do carro: %.2f\n", carro[resultado].total_kwh);
+                    printf("Porcentagem a carregar: %.0f%%\n", carro[resultado].variaveis.porcentagem_f);
+                    printf("Energia consumida: %.2f kWh\n", carro[resultado].variaveis.ener_consumida);
+                    printf("Tempo estimado: %d hora e %d minutos\n", carro[resultado].variaveis.tempo_hora, carro[resultado].variaveis.tempo_min);
+                    printf("Custo total: R$%.2f\n", carro[resultado].variaveis.valor_total);
+                    printf("-------------------------\n");
+                }else{
+                    printf("CARRO NAO ENCONTRADO\n");
+                }
+
+                close(fechar);
+
+                break;
+
+            case 4:
+                break;
+
+            case 5: 
+                break;
+
+            case 6:
+                printf("Enviando dados da sessao...\n");
+                printf("Dados enviados com sucesso!\n");
+                printf("---- Fim da Simulacao ----\n");
+                break;
+
+            default:
+                printf("Opcao invalida!\n");
+        }
     }
 
-}
     return 0;
 }
