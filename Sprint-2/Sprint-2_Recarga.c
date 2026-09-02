@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-// FUNÇÃO DO MENU
+// FUNÇÃO DOS MENUS
 void menu(void){
     printf("================================\n");
     printf("      ESTACAO DE RECARGA\n");
@@ -12,6 +12,17 @@ void menu(void){
     printf("5 - Estatisticas\n");
     printf("6 - Fim da Simulacao\n");
     printf("Escolha uma opcao: ");
+}
+
+void menu_ordem(void){
+    printf("=========================\n");
+    printf("     ORDENAR SESSAO\n");
+    printf("=========================\n");
+    printf("\n1 - Ordenar por ID\n");
+    printf("2 - Ordenar por Energia Consumida\n");
+    printf("3 - Ordenar por Custo da Sessao\n");
+    printf("4 - Ordenar por Tempo da Recarga\n");
+    printf("Escolha uma forma de ordenacao: ");
 }
 
 
@@ -83,13 +94,66 @@ int buscar_linear(Carro carro[], int carro_atual, int ID){
 }
 
 
+//  FUNÇÃO DE ORDENAÇÃO
+
+void Ordenacao_bubble(Carro carro[], int carro_atual, int criterio){
+    for(int i = 0; i < carro_atual - 1; i++){
+        for(int j = 0; j < carro_atual - 1 - i; j++){
+            
+            int trocar = 0;
+
+            if(criterio == 1){
+                if(carro[j].ID > carro[j + 1].ID){
+                    trocar = 1;
+                }
+            }else if(criterio == 2){
+                if(carro[j].variaveis.ener_consumida > carro[j + 1].variaveis.ener_consumida){
+                    trocar = 1;
+                }
+            }else if(criterio == 3){
+                if(carro[j].variaveis.valor_total > carro[j + 1].variaveis.valor_total){
+                    trocar = 1;
+                }
+            }else if(criterio == 4){
+                if(carro[j].variaveis.tempo > carro[j + 1].variaveis.tempo){
+                    trocar = 1;
+                }
+            }
+
+            if(trocar){
+                Carro temp = carro[j];
+                carro[j] = carro[j + 1];
+                carro[j + 1] = temp;
+            }
+        }
+    }
+}
+
+
+// FUNCAO LISTAR
+void listar_sessoes(Carro carro[], int carro_atual){
+
+    printf("\n===== SESSOES =====\n");
+
+    for(int i = 0; i < carro_atual; i++){
+
+        printf("\nCARRO %d\n", i + 1);
+        printf("ID: %d\n", carro[i].ID);
+        printf("Energia consumida: %.2f kWh\n",
+               carro[i].variaveis.ener_consumida);
+        printf("Custo: R$ %.2f\n",
+               carro[i].variaveis.valor_total);
+        printf("Tempo: %.2f horas\n",
+               carro[i].variaveis.tempo);
+    }
+}
 
 // CÓDIGO PRINCIPAL
 int main(){
 
     Carro carro[100];
     
-
+    int criterio;
     int opcao=0;
     int fechar=1;
     int carro_atual=0;
@@ -227,6 +291,17 @@ int main(){
                 break;
 
             case 4:
+                menu_ordem();
+                scanf("%d", &criterio);
+                
+                Ordenacao_bubble(carro, carro_atual, criterio);
+
+                printf("Ordenacao concluida\n");
+
+                listar_sessoes(carro, carro_atual);
+
+                printf("\n");
+                close(fechar);
                 break;
 
             case 5: 
