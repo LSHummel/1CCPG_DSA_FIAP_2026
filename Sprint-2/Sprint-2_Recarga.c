@@ -158,6 +158,9 @@ int main(){
     int fechar=1;
     int carro_atual=0;
     
+    float maior_consumo = 0.0;
+    float menor_consumo = 0.0;
+
     int ID = 0;
 
 
@@ -305,6 +308,42 @@ int main(){
                 break;
 
             case 5: 
+                printf("=========================\n");
+                printf("     ESTATISTICAS\n");
+                printf("=========================\n");
+                int qt_sessoes = 0;
+                Ordenacao_bubble(carro, carro_atual, 1);
+                qt_sessoes = carro[carro_atual-1].ID;
+                printf("\nSessoes realizadas: %d\n", qt_sessoes);
+                
+                
+                float soma_ener = 0;
+                for(int i = 0; i < carro_atual; i++){
+                    soma_ener = soma_ener + carro[i].variaveis.ener_consumida;
+                }
+                printf("Energia fornecida: %.2f kWh\n", soma_ener);
+
+
+                float soma_fatu = 0;
+                for(int i = 0; i < carro_atual; i++){
+                    soma_fatu = soma_fatu + carro[i].variaveis.valor_total;
+                }
+                printf("Faturamento: R$ %.2f\n", soma_fatu);
+
+
+                float custo_medio = soma_fatu / qt_sessoes;
+                printf("Custo medio: R$ %.2f\n\n", custo_medio);
+                
+
+                Ordenacao_bubble(carro, carro_atual, 2);
+                maior_consumo = carro[carro_atual-1].variaveis.ener_consumida;
+                menor_consumo = carro[1].variaveis.ener_consumida;
+
+                printf("Maior consumo: %.2f kwh\n", maior_consumo);
+                printf("Menor consumo: %.2f kwh\n", menor_consumo);
+
+                printf("\n");
+                close(fechar);
                 break;
 
             case 6:
