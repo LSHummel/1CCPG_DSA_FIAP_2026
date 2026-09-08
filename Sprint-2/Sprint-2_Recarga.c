@@ -148,39 +148,6 @@ void listar_sessoes(Carro carro[], int carro_atual){
     }
 }
 
-
-// FUNÇÃO PARA CRIAR ARQUIVO CSV
-void criar_csv(Carro carro[], int carro_atual){
-
-    FILE *arquivo = fopen("sessoes.csv", "w");
-
-    if(arquivo == NULL){
-        printf("Erro ao criar o arquivo CSV!\n");
-        return;
-    }
-
-    // Cabeçalho do CSV
-    fprintf(arquivo, "ID,Energia Consumida,Valor Total,Tempo,Hora\n");
-
-    // Salva todas as sessoes
-    for(int i = 0; i < carro_atual; i++){
-
-        fprintf(arquivo, "%d,%.2f,%.2f,%.2f,%d\n",
-                carro[i].ID,
-                carro[i].variaveis.ener_consumida,
-                carro[i].variaveis.valor_total,
-                carro[i].variaveis.tempo,
-                carro[i].hora);
-    }
-
-    fclose(arquivo);
-
-    printf("Arquivo sessoes.csv criado com sucesso!\n");
-}
-
-
-
-
 // CÓDIGO PRINCIPAL
 int main(){
 
@@ -287,6 +254,13 @@ int main(){
                     printf("Custo total: R$%.2f\n", carro[i].variaveis.valor_total);
                     printf("-------------------------\n");
                 }
+
+
+
+
+
+
+                
                 printf("\n");
 
                 printf("\n");
@@ -381,10 +355,6 @@ int main(){
 
             case 6:
                 printf("Enviando dados da sessao...\n");
-
-                Ordenacao_bubble(carro, carro_atual, 1);
-                criar_csv(carro, carro_atual);
-
                 printf("Dados enviados com sucesso!\n");
                 printf("---- Fim da Simulacao ----\n");
                 break;
